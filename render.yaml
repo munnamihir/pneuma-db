@@ -1,0 +1,25 @@
+# render.yaml — Deploy PNEUMA relay for FREE on Render.com
+# https://render.com (free tier — no credit card required)
+#
+# To deploy:
+# 1. Push this file to your GitHub repo
+# 2. Go to render.com → New → Blueprint
+# 3. Connect your GitHub repo
+# 4. Click Deploy — that's it!
+
+services:
+  - type: web
+    name: pneuma-relay
+    env: python
+    region: oregon   # or frankfurt for Europe
+    plan: free       # Free tier — 750 hours/month
+    buildCommand: pip install pneuma-db websockets click uvicorn
+    startCommand: python -m pneuma_db.relay_server --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: PNEUMA_LOG_LEVEL
+        value: info
+      - key: PYTHON_VERSION
+        value: 3.12.0

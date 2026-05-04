@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # PNEUMA Relay Server — routes encrypted packets globally
+  relay:
+    build: .
+    container_name: pneuma-relay
+    ports:
+      - "8765:8765"
+    restart: always
+    environment:
+      - PNEUMA_LOG_LEVEL=info
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.connect(('localhost',8765)); s.close()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PNEUMA-DB REST API — exposes DB over HTTP for Node.js / web apps
+  api:
+    build: .
+    container_name: pneuma-api
+    ports:
+      - "7723:7723"
+    restart: always
+    environment:
+      - PNEUMA_RELAY_URL=ws://relay:8765
+      - PNEUMA_NODE_ID=api-node
+    command: >
+      python -m pneuma_db.server
+      --node-id api-node
+      --relay ws://relay:8765
+      --host 0.0.0.0
+      --port 7723
+    depends_on:
+      - relay
+    volumes:
+      - pneuma-data:/app/data
+
+volumes:
+  pneuma-data:

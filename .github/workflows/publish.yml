@@ -1,0 +1,65 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"   # triggers on v3.0.0, v3.0.1, etc.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # for trusted publishing (no API key needed)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system deps
+        run: sudo apt-get install -y portaudio19-dev
+
+      - name: Install build tools
+        run: pip install hatch
+
+      - name: Build package
+        run: hatch build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # Uses trusted publishing — no API token needed
+        # Just add your GitHub repo to PyPI trusted publishers
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: publish
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Extract version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          name: "PNEUMA v${{ steps.version.outputs.version }}"
+          body: |
+            ## PNEUMA v${{ steps.version.outputs.version }}
+            
+            ### Install
+            ```bash
+            pip install pneuma-db==${{ steps.version.outputs.version }}
+            ```
+            
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}

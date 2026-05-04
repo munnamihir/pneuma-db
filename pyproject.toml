@@ -1,0 +1,95 @@
+[build-system]
+requires      = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name        = "pneuma-db"
+version     = "3.0.0"
+description = "Post-quantum, networkless, encrypted distributed database over ultrasonic air"
+readme      = "README.md"
+license     = { file = "LICENSE" }
+requires-python = ">=3.10"
+keywords    = [
+    "post-quantum", "ml-kem", "fips-203", "quantum-safe",
+    "database", "distributed", "ultrasonic", "acoustic",
+    "networkless", "air-gap", "encrypted", "sqlite",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Security :: Cryptography",
+    "Topic :: System :: Networking",
+]
+dependencies = [
+    "reedsolo>=1.7.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "pynacl>=1.5.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "websockets>=12.0",
+    "click>=8.1.0",
+    "requests>=2.31.0",
+    "pydantic>=2.0.0",
+    "sqlparse>=0.4.4",
+]
+
+[project.optional-dependencies]
+audio   = ["pyaudio>=0.2.13"]
+quantum = ["liboqs-python>=0.10.0"]
+dev     = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "httpx>=0.25",
+    "black",
+    "ruff",
+    "mypy",
+]
+all = ["pneuma-db[audio,quantum,dev]"]
+
+[project.urls]
+Homepage      = "https://pneuma.io"
+Repository    = "https://github.com/YOUR_USERNAME/pneuma-db"
+Documentation = "https://docs.pneuma.io"
+Changelog     = "https://github.com/YOUR_USERNAME/pneuma-db/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/YOUR_USERNAME/pneuma-db/issues"
+
+[project.scripts]
+pneuma-db   = "pneuma_db.cli:main"
+pneuma-sql  = "pneuma_sql.cli:main"
+pneuma-mesh = "pneuma_mesh.run:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pneuma_db", "pneuma_sql", "pneuma_mesh"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "pneuma_db/",
+    "pneuma_sql/",
+    "pneuma_mesh/",
+    "tests/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths    = ["tests"]
+asyncio_mode = "auto"
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+select      = ["E", "F", "I"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
