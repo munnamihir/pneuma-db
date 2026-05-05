@@ -9,8 +9,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "pneuma-db"))
 
 import time
 import pytest
-from tdma      import TDMAScheduler
-from discovery import BeaconPayload, BEACON_PREFIX
+from pneuma_mesh.tdma      import TDMAScheduler
+from pneuma_mesh.discovery import BeaconPayload, BEACON_PREFIX
 
 
 # ══════════════════════════════════════════════════════
