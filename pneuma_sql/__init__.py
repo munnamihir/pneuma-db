@@ -31,7 +31,7 @@ Usage — identical to sqlite3:
     conn.close()
 """
 
-from sql_engine import (
+from pneuma_sql.sql_engine import (
     connect,
     Connection,
     Cursor,
