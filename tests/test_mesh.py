@@ -4,8 +4,7 @@ Tests the mesh logic using simulated/loopback transport.
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "pneuma-db"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import time
 import pytest
