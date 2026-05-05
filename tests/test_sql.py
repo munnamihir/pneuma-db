@@ -9,7 +9,7 @@ import sys, os, time, pytest, sqlite3
 sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "pneuma-db"))
 
-from sql_engine import (
+from pneuma_sql.sql_engine import (
     SQLParser, RowEvaluator, PneumaSQLStore, Connection,
     TableSchema, Column, ColType,
     OperationalError, IntegrityError, ProgrammingError,
